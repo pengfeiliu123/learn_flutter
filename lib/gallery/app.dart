@@ -54,7 +54,7 @@ class GalleryAppState extends State<GalleryApp> {
   @override
   void initState() {
     // TODO: implement initState
-//    _timeDilation = timeDilation;
+    _timeDilation = timeDilation;
     super.initState();
   }
 
@@ -62,8 +62,8 @@ class GalleryAppState extends State<GalleryApp> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-//    _timeDilationTimer?.cancel();
-//    _timeDilationTimer = null;
+    _timeDilationTimer?.cancel();
+    _timeDilationTimer = null;
   }
 
   Widget _applyScaleFactor(Widget child) {
@@ -86,6 +86,29 @@ class GalleryAppState extends State<GalleryApp> {
           _useLightTheme = value;
         });
       },
+      showPerformanceOverlay: _showPerformanceOverlay,
+      onShowPerformanceOverlayChanged: widget.enablePerformanceOverlay?(bool value){
+        setState((){
+          _showPerformanceOverlay = value;
+        });
+      }:null,
+      checkerboardRasterCacheImages: _checkerboardRasterCacheImages,
+      onCheckerboardRasterCacheImagesChanged: widget.checkerboardRasterCacheImages ? (bool value) {
+        setState(() {
+          _checkerboardRasterCacheImages = value;
+        });
+      } : null,
+      checkerboardOffscreenLayers: _checkerboardOffscreenLayers,
+      onCheckerboardOffscreenLayersChanged: widget.checkerboardOffscreenLayers ? (bool value) {
+        setState(() {
+          _checkerboardOffscreenLayers = value;
+        });
+      } : null,
+      onPlatformChanged: (TargetPlatform value) {
+        setState(() {
+          _platform = value == defaultTargetPlatform ? null : value;
+        });
+      },
       timeDilation: _timeDilation,
       onTimeDilationChanged: (double value) {
         setState(() {
@@ -104,6 +127,20 @@ class GalleryAppState extends State<GalleryApp> {
           }
         });
       },
+      textScaleFactor: _textScaleFactor,
+      onTextScaleFactorChanged: (double value){
+        setState((){
+          _textScaleFactor = value;
+        });
+      },
+      overrideDirection: _overrideDirection,
+      onOverrideDirectionChanged: (TextDirection value){
+        setState((){
+          _overrideDirection = value;
+        });
+      },
+      onSendFeedback: widget.onSendFeedback,
+
     );
 
     return new MaterialApp(
@@ -114,7 +151,8 @@ class GalleryAppState extends State<GalleryApp> {
       home: _applyScaleFactor(home),
       builder: (BuildContext context, Widget child) {
         return new Directionality(
-            textDirection: _overrideDirection, child: _applyScaleFactor(child));
+            textDirection: _overrideDirection,
+            child: _applyScaleFactor(child));
       },
     );
   }
