@@ -4,15 +4,12 @@ import 'package:learn_flutter/gallery/drawer.dart';
 import 'package:learn_flutter/gallery/item.dart';
 
 const double _kFlexibleSpaceMaxHeight = 256.0;
-const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
 
 class _BackgroundLayer {
   _BackgroundLayer({int level, double parallax})
-      : assetName = 'appbar/appbar_background_layer$level.png',
-        assetPackage = _kGalleryAssetsPackage,
+      : assetName = 'assets/images/appbar/appbar_background_layer$level.png',
         parallaxTween = new Tween<double>(begin: 0.0, end: parallax);
   final String assetName;
-  final String assetPackage;
   final Tween<double> parallaxTween;
 }
 
@@ -26,9 +23,9 @@ final List<_BackgroundLayer> _kBackgroundLayers = <_BackgroundLayer>[
 ];
 
 class _AppBarBackground extends StatelessWidget {
-  final Animation<double> animation;
-
   const _AppBarBackground({Key key, this.animation}) : super(key: key);
+
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +40,10 @@ class _AppBarBackground extends StatelessWidget {
                   right: 0.0,
                   bottom: 0.0,
                   child: new Image.asset(layer.assetName,
-                      package: layer.assetPackage,
                       fit: BoxFit.cover,
-                      height: _kFlexibleSpaceMaxHeight));
-            }).toList(),
+                      height: _kFlexibleSpaceMaxHeight)
+              );
+            }).toList()
           );
         });
   }
@@ -195,7 +192,7 @@ class GalleryHomeState extends State<GalleryHome>
               flexibleSpace: const FlexibleSpaceBar(
                 title: const Text('Learn Flutter'),
                 background: const _AppBarBackground(
-                  animation: kAlwaysDismissedAnimation,
+                  animation: kAlwaysDismissedAnimation
                 ),
               ),
             ),
@@ -221,7 +218,7 @@ class GalleryHomeState extends State<GalleryHome>
             child: const Banner(
               message: 'PREVIEW',
               location: BannerLocation.topEnd,
-            ),
+            )
           ),
         ],
       );

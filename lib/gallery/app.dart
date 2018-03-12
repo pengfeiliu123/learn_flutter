@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learn_flutter/gallery/home.dart';
+import 'package:learn_flutter/gallery/item.dart';
 import 'package:learn_flutter/gallery/updates.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
@@ -17,12 +18,13 @@ final ThemeData _kGalleryDarkTheme = new ThemeData(
 );
 
 class GalleryApp extends StatefulWidget {
-  const GalleryApp({this.updateUrlFetcher,
-    this.enablePerformanceOverlay: true,
-    this.checkerboardRasterCacheImages: true,
-    this.checkerboardOffscreenLayers: true,
-    this.onSendFeedback,
-    Key key})
+  const GalleryApp(
+      {this.updateUrlFetcher,
+      this.enablePerformanceOverlay: true,
+      this.checkerboardRasterCacheImages: true,
+      this.checkerboardOffscreenLayers: true,
+      this.onSendFeedback,
+      Key key})
       : super(key: key);
 
   final UpdateUrlFetcher updateUrlFetcher;
@@ -68,8 +70,7 @@ class GalleryAppState extends State<GalleryApp> {
 
   Widget _applyScaleFactor(Widget child) {
     return new Builder(
-      builder: (BuildContext context) =>
-      new MediaQuery(
+      builder: (BuildContext context) => new MediaQuery(
           data: MediaQuery
               .of(context)
               .copyWith(textScaleFactor: _textScaleFactor),
@@ -87,23 +88,30 @@ class GalleryAppState extends State<GalleryApp> {
         });
       },
       showPerformanceOverlay: _showPerformanceOverlay,
-      onShowPerformanceOverlayChanged: widget.enablePerformanceOverlay?(bool value){
-        setState((){
-          _showPerformanceOverlay = value;
-        });
-      }:null,
+      onShowPerformanceOverlayChanged: widget.enablePerformanceOverlay
+          ? (bool value) {
+              setState(() {
+                _showPerformanceOverlay = value;
+              });
+            }
+          : null,
       checkerboardRasterCacheImages: _checkerboardRasterCacheImages,
-      onCheckerboardRasterCacheImagesChanged: widget.checkerboardRasterCacheImages ? (bool value) {
-        setState(() {
-          _checkerboardRasterCacheImages = value;
-        });
-      } : null,
+      onCheckerboardRasterCacheImagesChanged:
+          widget.checkerboardRasterCacheImages
+              ? (bool value) {
+                  setState(() {
+                    _checkerboardRasterCacheImages = value;
+                  });
+                }
+              : null,
       checkerboardOffscreenLayers: _checkerboardOffscreenLayers,
-      onCheckerboardOffscreenLayersChanged: widget.checkerboardOffscreenLayers ? (bool value) {
-        setState(() {
-          _checkerboardOffscreenLayers = value;
-        });
-      } : null,
+      onCheckerboardOffscreenLayersChanged: widget.checkerboardOffscreenLayers
+          ? (bool value) {
+              setState(() {
+                _checkerboardOffscreenLayers = value;
+              });
+            }
+          : null,
       onPlatformChanged: (TargetPlatform value) {
         setState(() {
           _platform = value == defaultTargetPlatform ? null : value;
@@ -119,7 +127,8 @@ class GalleryAppState extends State<GalleryApp> {
             // We delay the time dilation change long enough that the user can see
             // that the checkbox in the drawer has started reacting, then we slam
             // on the brakes so that they see that the time is in fact now dilated.
-            _timeDilationTimer = new Timer(const Duration(milliseconds: 150), () {
+            _timeDilationTimer =
+                new Timer(const Duration(milliseconds: 150), () {
               timeDilation = _timeDilation;
             });
           } else {
@@ -128,31 +137,45 @@ class GalleryAppState extends State<GalleryApp> {
         });
       },
       textScaleFactor: _textScaleFactor,
-      onTextScaleFactorChanged: (double value){
-        setState((){
+      onTextScaleFactorChanged: (double value) {
+        setState(() {
           _textScaleFactor = value;
         });
       },
       overrideDirection: _overrideDirection,
-      onOverrideDirectionChanged: (TextDirection value){
-        setState((){
+      onOverrideDirectionChanged: (TextDirection value) {
+        setState(() {
           _overrideDirection = value;
         });
       },
       onSendFeedback: widget.onSendFeedback,
-
     );
+
+    if (widget.updateUrlFetcher != null) {
+      home =
+          new Updater(updateUrlFetcher: widget.updateUrlFetcher, child: home);
+    }
+
+    final Map<String, WidgetBuilder> _kRoutes = <String, WidgetBuilder>{};
+    for (GalleryItem item in kAllGalleryItems) {
+      _kRoutes[item.routeName] = (BuildContext context) {
+        return item.buildRoute(context);
+      };
+    }
 
     return new MaterialApp(
       title: "Learn Flutter",
-      color: Colors.red,
+      color: Colors.blue,
       theme: (_useLightTheme ? _kGalleryLightTheme : _kGalleryDarkTheme)
           .copyWith(platform: _platform ?? defaultTargetPlatform),
+      showPerformanceOverlay: _showPerformanceOverlay,
+      checkerboardRasterCacheImages: _checkerboardRasterCacheImages,
+      checkerboardOffscreenLayers: _checkerboardOffscreenLayers,
+      routes: _kRoutes,
       home: _applyScaleFactor(home),
       builder: (BuildContext context, Widget child) {
         return new Directionality(
-            textDirection: _overrideDirection,
-            child: _applyScaleFactor(child));
+            textDirection: _overrideDirection, child: _applyScaleFactor(child));
       },
     );
   }
