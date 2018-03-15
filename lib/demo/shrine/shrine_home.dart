@@ -176,6 +176,7 @@ class _ProductItem extends StatelessWidget {
                 ),
                 new Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: new _VendorItem(vendor: product.vendor),
                 ),
               ],
             ),
@@ -215,7 +216,7 @@ abstract class _PriceItem extends StatelessWidget {
 
   Widget buildItem(BuildContext context, TextStyle style, EdgeInsets padding) {
     BoxDecoration decoration;
-    if (_shoppingCart[padding] != null) {
+    if (_shoppingCart[product] != null) {
       decoration =
           new BoxDecoration(color: ShrineTheme.of(context).priceHighlightColor);
     }
